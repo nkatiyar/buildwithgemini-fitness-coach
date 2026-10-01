@@ -1,0 +1,1261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fitness Coach</title>
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Material+Symbols+Outlined" rel="stylesheet">
+<style>
+  :root {
+    --accent: #059669;
+    --accent-light: #10b981;
+    --accent-dark: #047857;
+    --accent-subtle: #ecfdf5;
+    --accent-border: #a7f3d0;
+    --bg-page: #f0fdf4;
+    --bg-card: #ffffff;
+    --bg-input: #f8fafc;
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --border: #e2e8f0;
+    --sidebar-bg: #ffffff;
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.03);
+  }
+
+  /* Dark / Gym-Mode */
+  body.dark-mode {
+    --accent: #10b981;
+    --accent-light: #34d399;
+    --accent-dark: #059669;
+    --accent-subtle: #064e3b;
+    --accent-border: #047857;
+    --bg-page: #090d16;
+    --bg-card: #0f172a;
+    --bg-input: #1e293b;
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --border: #334155;
+    --sidebar-bg: #0f172a;
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 8px -1px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 10px 20px -3px rgba(0, 0, 0, 0.6);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    background: var(--bg-page);
+    color: var(--text-main);
+    display: flex;
+    justify-content: center;
+    height: 100vh;
+    overflow: hidden;
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+
+  #main-wrapper {
+    width: 100%;
+    max-width: 1200px;
+    height: 100vh;
+    display: flex;
+    position: relative;
+    box-shadow: 0 0 50px rgba(0,0,0,0.1);
+    background: var(--bg-card);
+  }
+
+  #chat-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    min-width: 0;
+    position: relative;
+  }
+
+  /* --- Premium Header --- */
+  header {
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+    color: #fff;
+    padding: 0.75rem 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: var(--shadow-md);
+    z-index: 20;
+    flex-shrink: 0;
+  }
+
+  .brand-group {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .brand-badge {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(8px);
+    border-radius: 12px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+  }
+
+  .brand-text h1 {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: #fff;
+  }
+
+  .brand-text p {
+    margin: 0;
+    font-size: 0.75rem;
+    color: #a7f3d0;
+    font-weight: 500;
+  }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .icon-btn {
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    color: #fff;
+    border-radius: 10px;
+    padding: 0.4rem 0.65rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    font-family: inherit;
+    transition: all 0.15s ease;
+  }
+
+  .icon-btn:hover {
+    background: rgba(255, 255, 255, 0.28);
+    transform: translateY(-1px);
+  }
+
+  .status-pill {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: rgba(255, 255, 255, 0.15);
+    padding: 0.35rem 0.65rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .status-dot {
+    width: 7px;
+    height: 7px;
+    background: #34d399;
+    border-radius: 50%;
+    box-shadow: 0 0 8px #34d399;
+  }
+
+  /* --- Timer / Stopwatch Floating Banner --- */
+  #timer-bar {
+    background: var(--bg-input);
+    border-bottom: 1px solid var(--border);
+    padding: 0.45rem 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    font-weight: 600;
+    z-index: 15;
+    flex-shrink: 0;
+  }
+
+  .timer-display {
+    font-family: monospace;
+    font-size: 1.15rem;
+    color: var(--accent);
+    font-weight: 700;
+    letter-spacing: 0.05em;
+  }
+
+  .timer-controls {
+    display: flex;
+    gap: 0.35rem;
+  }
+
+  .timer-btn {
+    border: 1px solid var(--border);
+    background: var(--bg-card);
+    color: var(--text-main);
+    border-radius: 6px;
+    padding: 0.25rem 0.6rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.2rem;
+  }
+
+  .timer-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* --- Quick Stats / Fitness Profile Sidebar --- */
+  #profile-sidebar {
+    width: 290px;
+    background: var(--sidebar-bg);
+    border-left: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    transition: margin-right 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 25;
+    flex-shrink: 0;
+  }
+
+  #profile-sidebar.collapsed {
+    margin-right: -290px;
+  }
+
+  .sidebar-header {
+    padding: 1rem 1.2rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-weight: 700;
+  }
+
+  .sidebar-header h3 {
+    margin: 0;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .sidebar-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+  }
+
+  .stat-card {
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 0.85rem;
+  }
+
+  .stat-card-title {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+    margin-bottom: 0.4rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .stat-card-val {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: var(--accent);
+  }
+
+  .stat-tag-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin-top: 0.4rem;
+  }
+
+  .stat-tag {
+    background: var(--accent-subtle);
+    color: var(--accent);
+    border: 1px solid var(--accent-border);
+    border-radius: 6px;
+    padding: 0.2rem 0.5rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+  }
+
+  /* --- Chat Area & Dialogue Flow --- */
+  #log {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.4rem 1.2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    scroll-behavior: smooth;
+  }
+
+  /* Welcome Hero Empty State */
+  #welcome-hero {
+    background: linear-gradient(135deg, var(--accent-subtle) 0%, var(--bg-input) 100%);
+    border: 1.5px dashed var(--accent-border);
+    border-radius: 18px;
+    padding: 1.5rem;
+    text-align: center;
+    margin: 0.5rem 0 1rem;
+  }
+
+  #welcome-hero h2 {
+    margin: 0 0 0.4rem;
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: var(--accent);
+  }
+
+  #welcome-hero p {
+    margin: 0 0 1.1rem;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+  }
+
+  .hero-btn-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.65rem;
+  }
+
+  .hero-quick-btn {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 0.75rem 0.9rem;
+    text-align: left;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.15s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  .hero-quick-btn:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+  }
+
+  .hero-btn-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-main);
+  }
+
+  .hero-btn-desc {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+  }
+
+  /* Dialogue Turns */
+  .dialogue-turn {
+    display: flex;
+    gap: 0.85rem;
+    align-items: flex-start;
+    animation: fadeIn 0.25s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .dialogue-turn.user {
+    flex-direction: row-reverse;
+  }
+
+  .avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .dialogue-turn.coach .avatar {
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+    color: #fff;
+    border: 2px solid var(--bg-card);
+  }
+
+  .dialogue-turn.user .avatar {
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    color: #fff;
+    border: 2px solid var(--bg-card);
+  }
+
+  .bubble-wrap {
+    display: flex;
+    flex-direction: column;
+    max-width: 82%;
+  }
+
+  .dialogue-turn.user .bubble-wrap {
+    align-items: flex-end;
+  }
+
+  .sender-name {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-bottom: 0.25rem;
+    padding: 0 0.25rem;
+  }
+
+  .bubble {
+    padding: 0.85rem 1.15rem;
+    border-radius: 18px;
+    font-size: 0.95rem;
+    line-height: 1.55;
+    position: relative;
+    word-break: break-word;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .dialogue-turn.coach .bubble {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    color: var(--text-main);
+    border-top-left-radius: 4px;
+  }
+
+  .dialogue-turn.user .bubble {
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+    color: #ffffff;
+    border-top-right-radius: 4px;
+    font-weight: 500;
+  }
+
+  .bubble.rich {
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    max-width: 100% !important;
+    box-shadow: none !important;
+  }
+
+  /* Category Filter Chips */
+  .category-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0 0.2rem;
+  }
+
+  .cat-tab {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.25rem 0.5rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.15s ease;
+  }
+
+  .cat-tab.active, .cat-tab:hover {
+    color: var(--accent);
+    background: var(--accent-subtle);
+  }
+
+  /* Form & Interactive Prompt Row */
+  form {
+    display: flex;
+    flex-direction: column;
+    padding: 0.75rem 1.25rem 1rem;
+    background: var(--bg-card);
+    border-top: 1px solid var(--border);
+    gap: 0.6rem;
+    flex-shrink: 0;
+  }
+
+  .prompt-row {
+    display: flex;
+    gap: 0.5rem;
+    overflow-x: auto;
+    padding-bottom: 0.25rem;
+    scrollbar-width: thin;
+  }
+
+  .prompt-pill {
+    background: var(--accent-subtle);
+    color: var(--accent);
+    border: 1px solid var(--accent-border);
+    border-radius: 20px;
+    padding: 0.4rem 0.85rem;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-family: inherit;
+  }
+
+  .prompt-pill:hover {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(5, 150, 105, 0.2);
+  }
+
+  .input-row {
+    display: flex;
+    gap: 0.5rem;
+    width: 100%;
+    align-items: center;
+  }
+
+  input {
+    flex: 1;
+    padding: 0.8rem 1.1rem;
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
+    font-size: 0.95rem;
+    font-family: inherit;
+    background: var(--bg-input);
+    color: var(--text-main);
+    transition: all 0.15s ease;
+  }
+
+  input:focus {
+    outline: none;
+    background: var(--bg-card);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.15);
+  }
+
+  .voice-btn {
+    width: 44px;
+    height: 44px;
+    border: 1.5px solid var(--border);
+    background: var(--bg-input);
+    color: var(--text-muted);
+    border-radius: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s ease;
+  }
+
+  .voice-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .voice-btn.recording {
+    background: #ef4444;
+    color: #fff;
+    border-color: #ef4444;
+    animation: pulse 1s infinite;
+  }
+
+  @keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.5); }
+    70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+  }
+
+  button.send-btn {
+    padding: 0 1.25rem;
+    height: 44px;
+    border: none;
+    border-radius: 14px;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-family: inherit;
+  }
+
+  button.send-btn:hover {
+    background: linear-gradient(135deg, var(--accent-light) 0%, var(--accent) 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(5, 150, 105, 0.35);
+  }
+
+  /* --- A2UI Card & Component Styles --- */
+  .a2card {
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1.2rem;
+    background: var(--bg-card);
+    box-shadow: var(--shadow-md);
+    max-width: 100%;
+    border-left: 4px solid var(--accent);
+  }
+  .a2card + .a2card, .a2col > .a2card { margin-top: 0.8rem; }
+  .a2col { display: flex; flex-direction: column; gap: 0.5rem; }
+  .a2row { display: flex; flex-direction: row; gap: 0.75rem; align-items: center; flex-wrap: wrap; }
+  .a2row.between { justify-content: space-between; }
+  .a2text { margin: 0; line-height: 1.5; color: var(--text-main); }
+  .a2text.a2-h1 { font-size: 1.35rem; font-weight: 800; color: var(--accent); }
+  .a2text.a2-h2 { font-size: 1.15rem; font-weight: 750; color: var(--accent); }
+  .a2text.a2-h3 { font-size: 1.05rem; font-weight: 700; }
+  .a2text.a2-h4 { font-size: 0.95rem; font-weight: 650; }
+  .a2text.a2-caption { font-size: 0.85rem; color: var(--text-muted); font-weight: 500; }
+  .a2divider { border: none; border-top: 1px solid var(--border); margin: 0.5rem 0; width: 100%; }
+  
+  /* Badge Image Shimmer & Lightbox Click */
+  .a2img {
+    max-width: 100%;
+    border-radius: 12px;
+    display: block;
+    cursor: zoom-in;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 0 15px rgba(16, 185, 129, 0.25);
+    border: 2px solid var(--accent-border);
+  }
+  .a2img:hover {
+    transform: scale(1.02);
+    box-shadow: 0 0 25px rgba(16, 185, 129, 0.45);
+  }
+
+  .material-symbols-outlined {
+    font-family: 'Material Symbols Outlined';
+    font-size: 1.3rem;
+    line-height: 1;
+    vertical-align: middle;
+    color: var(--accent);
+  }
+
+  /* Lightbox Modal */
+  #lightbox-modal {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(6px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    z-index: 100;
+  }
+  #lightbox-modal.open { display: flex; }
+  #lightbox-img {
+    max-width: 90vw;
+    max-height: 80vh;
+    border-radius: 16px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+  }
+  .lightbox-controls {
+    margin-top: 1rem;
+    display: flex;
+    gap: 0.75rem;
+  }
+  .lightbox-btn {
+    background: #ffffff;
+    color: #0f172a;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  /* Typing animation */
+  .typing-indicator {
+    display: inline-flex;
+    gap: 4px;
+    align-items: center;
+    padding: 4px 6px;
+  }
+  .typing-indicator span {
+    width: 6px;
+    height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+    animation: bounce 1.2s infinite ease-in-out;
+  }
+  .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+  .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes bounce {
+    0%, 80%, 100% { transform: scale(0.6); opacity: 0.5; }
+    40% { transform: scale(1.1); opacity: 1; }
+  }
+</style>
+</head>
+<body>
+
+<div id="main-wrapper">
+  <!-- Chat Section -->
+  <div id="chat-container">
+    <header>
+      <div class="brand-group">
+        <div class="brand-badge">⚡</div>
+        <div class="brand-text">
+          <h1>Fitness Coach</h1>
+          <p>Personal Training & Nutrition Assistant</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <!-- Gym/Dark Mode Toggle -->
+        <button id="dark-toggle" class="icon-btn" title="Toggle Gym/Dark Mode">
+          <span class="material-symbols-outlined" style="font-size:1.15rem; color:#fff;">dark_mode</span>
+          <span>Gym Mode</span>
+        </button>
+        <!-- Profile / Quick Stats Toggle -->
+        <button id="sidebar-toggle" class="icon-btn" title="Toggle Athlete Profile">
+          <span class="material-symbols-outlined" style="font-size:1.15rem; color:#fff;">person</span>
+          <span>Profile</span>
+        </button>
+        <div class="status-pill">
+          <span class="status-dot"></span>
+          <span>Online</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Floating Timer / Stopwatch Bar -->
+    <div id="timer-bar">
+      <div style="display:flex; align-items:center; gap:0.5rem;">
+        <span class="material-symbols-outlined" style="font-size:1.1rem;">timer</span>
+        <span>Rest & Workout Timer:</span>
+        <span class="timer-display" id="timer-clock">00:00</span>
+      </div>
+      <div class="timer-controls">
+        <button class="timer-btn" id="timer-start">▶ Start</button>
+        <button class="timer-btn" id="timer-rest30">+30s Rest</button>
+        <button class="timer-btn" id="timer-reset">↺ Reset</button>
+      </div>
+    </div>
+
+    <!-- Main Message Log -->
+    <div id="log">
+      <!-- Empty State / Welcome Hero -->
+      <div id="welcome-hero">
+        <h2>👋 Welcome to Your Fitness Hub, Neerja!</h2>
+        <p>I am your dedicated fitness coach. I remember your goals, track sessions, compute training zones, and award milestone badges.</p>
+        <div class="hero-btn-grid">
+          <button class="hero-quick-btn" data-prompt="What workouts are available in the catalog?">
+            <span class="hero-btn-title">🏋️ Browse Workout Catalog</span>
+            <span class="hero-btn-desc">Explore full-body HIIT, core mobility & strength routines</span>
+          </button>
+          <button class="hero-quick-btn" data-prompt="Calculate my target heart rate training zones for age 30 with resting heart rate 65">
+            <span class="hero-btn-title">❤️ Compute Heart Rate Zones</span>
+            <span class="hero-btn-desc">Calculate Aerobic, Threshold, and VO2 Max zones via Python</span>
+          </button>
+          <button class="hero-quick-btn" data-prompt="Log a 45-minute HIIT workout session for today">
+            <span class="hero-btn-title">📝 Log Today's Workout</span>
+            <span class="hero-btn-desc">Persist completed workouts into your fitness memory</span>
+          </button>
+          <button class="hero-quick-btn" data-prompt="Generate a celebratory achievement milestone badge for completing 10 workout sessions">
+            <span class="hero-btn-title">🏆 Generate Milestone Badge</span>
+            <span class="hero-btn-desc">Create custom high-res celebration art with Gemini</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Input Form & Prompt Suggestions -->
+    <form id="form">
+      <div class="category-bar">
+        <span style="font-size:0.75rem; font-weight:700; color:var(--text-muted); margin-right:0.2rem;">PROMPTS:</span>
+        <button type="button" class="cat-tab active" data-cat="all">All</button>
+        <button type="button" class="cat-tab" data-cat="workouts">Workouts</button>
+        <button type="button" class="cat-tab" data-cat="calc">Calculators</button>
+        <button type="button" class="cat-tab" data-cat="log">Logging</button>
+        <button type="button" class="cat-tab" data-cat="rewards">Milestones</button>
+      </div>
+
+      <div class="prompt-row" id="prompt-row">
+        <!-- Workouts -->
+        <button type="button" class="prompt-pill" data-cat="workouts" data-prompt="What workouts are available in the catalog?">🏋️ Browse Workouts</button>
+        <button type="button" class="prompt-pill" data-cat="workouts" data-prompt="Suggest a 20-minute core strength routine without equipment">🧘 Core Mobility Flow</button>
+        <!-- Calculators -->
+        <button type="button" class="prompt-pill" data-cat="calc" data-prompt="Calculate my target heart rate training zones for age 30 with resting heart rate 65">❤️ Heart Rate Zones</button>
+        <button type="button" class="prompt-pill" data-cat="calc" data-prompt="Estimate calorie burn for 45 minutes of vigorous cycling for 68kg">🔥 Calorie Burn Estimate</button>
+        <!-- Logging -->
+        <button type="button" class="prompt-pill" data-cat="log" data-prompt="Log a 45-minute HIIT workout session for today">📝 Log HIIT Session</button>
+        <button type="button" class="prompt-pill" data-cat="log" data-prompt="Show my workout history and logged sessions">📊 View Logged Workouts</button>
+        <!-- Rewards -->
+        <button type="button" class="prompt-pill" data-cat="rewards" data-prompt="Generate an achievement milestone badge for hitting my weekly goal">🏆 Weekly Milestone Badge</button>
+      </div>
+
+      <div class="input-row">
+        <input id="input" placeholder="Ask about workouts, routines, heart rate zones, or log exercise…" autocomplete="off" autofocus>
+        <!-- Hands-free Voice Input -->
+        <button type="button" id="voice-btn" class="voice-btn" title="Voice Input (Speech-to-Text)">
+          <span class="material-symbols-outlined" style="font-size:1.25rem;">mic</span>
+        </button>
+        <button type="submit" class="send-btn">
+          <span>Send</span>
+          <span class="material-symbols-outlined" style="color:#fff; font-size:1.15rem;">send</span>
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Collapsible Quick-Stats / Fitness Profile Sidebar -->
+  <aside id="profile-sidebar">
+    <div class="sidebar-header">
+      <h3>
+        <span class="material-symbols-outlined">badge</span>
+        <span>Athlete Profile</span>
+      </h3>
+      <button class="icon-btn" id="close-sidebar" style="color:var(--text-muted); background:transparent; border:none; padding:0.2rem;">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+    <div class="sidebar-content">
+      <div class="stat-card">
+        <div class="stat-card-title">User</div>
+        <div class="stat-card-val" style="font-size:1.05rem;">Neerja</div>
+        <div style="font-size:0.75rem; color:var(--text-muted); margin-top:0.2rem;">Personal Plan: Active Fitness</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-card-title">Fitness Goals</div>
+        <div class="stat-tag-row">
+          <span class="stat-tag">Core Stability</span>
+          <span class="stat-tag">HIIT Endurance</span>
+          <span class="stat-tag">Strength Tone</span>
+          <span class="stat-tag">Injury Prevention</span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-card-title">Target Heart Rate Zones</div>
+        <div style="font-size:0.75rem; line-height:1.6; color:var(--text-muted);">
+          <div>• <strong>Warm-up:</strong> 95 - 114 bpm</div>
+          <div>• <strong>Fat Burn (Z2):</strong> 114 - 133 bpm</div>
+          <div>• <strong>Aerobic (Z3):</strong> 133 - 152 bpm</div>
+          <div>• <strong>Anaerobic (Z4):</strong> 152 - 171 bpm</div>
+          <div>• <strong>VO2 Max (Z5):</strong> 171 - 190 bpm</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-card-title">Safety & Limitations</div>
+        <div class="stat-tag-row">
+          <span class="stat-tag" style="background:#fef2f2; color:#ef4444; border-color:#fecaca;">Low-Impact Knee Care</span>
+          <span class="stat-tag">Dynamic Warmup</span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-card-title">Integrated Services</div>
+        <div style="font-size:0.75rem; color:var(--text-muted); line-height:1.6;">
+          <div>✅ <strong>Agent Engine</strong> Memory Bank</div>
+          <div>✅ <strong>Cloud Storage</strong> Image Badges</div>
+          <div>✅ <strong>Python Sandbox</strong> Calculations</div>
+          <div>✅ <strong>A2UI v0.8</strong> Interactive Cards</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<!-- Image Lightbox Modal -->
+<div id="lightbox-modal">
+  <img id="lightbox-img" src="" alt="Enlarged Badge Visual">
+  <div class="lightbox-controls">
+    <a id="lightbox-download" class="lightbox-btn" download="fitness-badge.png" target="_blank">
+      <span class="material-symbols-outlined" style="font-size:1.1rem;">download</span> Download
+    </a>
+    <button class="lightbox-btn" id="lightbox-close">
+      <span class="material-symbols-outlined" style="font-size:1.1rem;">close</span> Close
+    </button>
+  </div>
+</div>
+
+<script>
+const log = document.getElementById("log");
+const form = document.getElementById("form");
+const input = document.getElementById("input");
+const welcomeHero = document.getElementById("welcome-hero");
+
+function el(tag, cls, text) {
+  const e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (text != null) e.textContent = text;
+  return e;
+}
+
+function bubble(who) {
+  if (welcomeHero && welcomeHero.style.display !== "none") {
+    welcomeHero.style.display = "none";
+  }
+  const isUser = who === "user";
+  const turn = el("div", "dialogue-turn " + (isUser ? "user" : "coach"));
+
+  const avatar = el("div", "avatar");
+  avatar.textContent = isUser ? "👤" : "🏋️";
+
+  const wrap = el("div", "bubble-wrap");
+  const nameLabel = el("div", "sender-name", isUser ? "You" : "Coach Neerja");
+  const b = el("div", "bubble");
+
+  wrap.appendChild(nameLabel);
+  wrap.appendChild(b);
+
+  turn.appendChild(avatar);
+  turn.appendChild(wrap);
+
+  log.appendChild(turn);
+  log.scrollTop = log.scrollHeight;
+  return b;
+}
+
+/* ----------------------------------------------------------------------------
+ * A2UI mini-renderer (v0.8 Basic Catalog subset).
+ * -------------------------------------------------------------------------- */
+function boundStr(v) {
+  if (v == null) return "";
+  if (typeof v === "string") return v;
+  if (typeof v.literalString === "string") return v.literalString;
+  return "";
+}
+
+function childIds(props) {
+  const ids = [];
+  if (props && typeof props.child === "string") ids.push(props.child);
+  const ch = props && props.children;
+  if (ch && Array.isArray(ch.explicitList)) for (const c of ch.explicitList) if (typeof c === "string") ids.push(c);
+  return ids;
+}
+
+function iconName(n) { return String(n || "").replace(/([a-z0-9])([A-Z])/g, "$1_$2").replace(/\s+/g, "_").toLowerCase(); }
+
+function buildNode(id, comps, seen) {
+  if (!id || seen.has(id)) return null;
+  seen.add(id);
+  const spec = comps[id];
+  if (!spec || typeof spec !== "object") return null;
+  const type = Object.keys(spec)[0];
+  const props = spec[type] || {};
+  const kids = () => childIds(props).map(cid => buildNode(cid, comps, seen)).filter(Boolean);
+
+  switch (type) {
+    case "Card": {
+      const d = el("div", "a2card"); kids().forEach(n => d.appendChild(n)); return d;
+    }
+    case "Column":
+    case "List": {
+      const horizontal = type === "List" && props.direction === "horizontal";
+      const d = el("div", horizontal ? "a2row" : "a2col"); kids().forEach(n => d.appendChild(n)); return d;
+    }
+    case "Row": {
+      const d = el("div", "a2row" + (props.distribution === "spaceBetween" ? " between" : ""));
+      kids().forEach(n => d.appendChild(n)); return d;
+    }
+    case "Text": {
+      const t = el("div", "a2text");
+      const hint = String(props.usageHint || "body").toLowerCase();
+      if (["h1", "h2", "h3", "h4", "h5", "h6"].includes(hint)) t.classList.add("a2-" + hint);
+      else if (hint === "caption") t.classList.add("a2-caption");
+      t.textContent = boundStr(props.text);
+      return t;
+    }
+    case "Divider":
+      return el("hr", "a2divider");
+    case "Image": {
+      const src = boundStr(props.url || props.src);
+      if (!/^https?:\/\//i.test(src)) return null;
+      const img = el("img", "a2img");
+      img.src = src;
+      img.alt = boundStr(props.alt) || "Milestone Badge";
+      img.title = "Click to enlarge badge";
+      img.addEventListener("click", () => openLightbox(src));
+      return img;
+    }
+    case "Icon": {
+      const s = el("span", "material-symbols-outlined"); s.textContent = iconName(boundStr(props.name) || props.name); return s;
+    }
+    default:
+      return null;
+  }
+}
+
+function renderSurface(messages, container) {
+  const comps = {};
+  const roots = [];
+  for (const m of messages) {
+    if (m.beginRendering && typeof m.beginRendering.root === "string") roots.push(m.beginRendering.root);
+    const su = m.surfaceUpdate;
+    if (su && Array.isArray(su.components)) for (const c of su.components) if (c && c.id && c.component) comps[c.id] = c.component;
+  }
+  let rootIds = roots.filter(r => comps[r]);
+  if (rootIds.length === 0) {
+    const referenced = new Set();
+    for (const id in comps) { const spec = comps[id]; childIds(spec[Object.keys(spec)[0]] || {}).forEach(c => referenced.add(c)); }
+    rootIds = Object.keys(comps).filter(id => !referenced.has(id));
+  }
+  let drew = false;
+  for (const rid of rootIds) { const node = buildNode(rid, comps, new Set()); if (node) { container.appendChild(node); drew = true; } }
+  return drew;
+}
+
+function flattenText(messages) {
+  const out = [];
+  for (const m of messages) {
+    const su = m.surfaceUpdate;
+    if (su && Array.isArray(su.components)) for (const c of su.components) if (c && c.component && c.component.Text) out.push(boundStr(c.component.Text.text));
+  }
+  return out.join("\n").trim();
+}
+
+function renderReply(b, parts) {
+  b.innerHTML = "";
+  const texts = parts.filter(p => p && (p.kind === "text" || (!p.kind && p.text))).map(p => p.text || "");
+  const a2ui = parts.filter(p => p && p.kind === "a2ui" && p.data).map(p => p.data);
+
+  const textStr = texts.join("\n").trim();
+  if (textStr) b.appendChild(el("div", null, textStr));
+
+  if (a2ui.length) {
+    b.classList.add("rich");
+    if (!renderSurface(a2ui, b)) b.appendChild(el("div", null, flattenText(a2ui) || "(no card content)"));
+  }
+  if (!b.childNodes.length) b.textContent = "(no response)";
+  log.scrollTop = log.scrollHeight;
+}
+
+async function sendMessage(text) {
+  if (!text) return;
+  bubble("user").textContent = text;
+  input.value = "";
+  const b = bubble("coach");
+  b.innerHTML = '<div class="typing-indicator"><span></span><span></span><span></span></div>';
+  try {
+    const res = await fetch("/chat", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message: text }) });
+    const raw = await res.text();
+    let data;
+    try { data = JSON.parse(raw); }
+    catch { throw new Error(`Server returned non-JSON (HTTP ${res.status}). ${raw.slice(0, 300)}`); }
+    renderReply(b, data.parts || []);
+  } catch (e) {
+    b.textContent = "Error: " + e.message;
+  }
+}
+
+form.addEventListener("submit", async (ev) => {
+  ev.preventDefault();
+  const text = input.value.trim();
+  await sendMessage(text);
+});
+
+// Click handlers for prompt suggestions & hero buttons
+document.addEventListener("click", (e) => {
+  const btn = e.target.closest("[data-prompt]");
+  if (btn) {
+    const prompt = btn.getAttribute("data-prompt");
+    if (prompt) sendMessage(prompt);
+  }
+});
+
+/* ----------------------------------------------------------------------------
+ * 1. Category Chips Filter
+ * -------------------------------------------------------------------------- */
+document.querySelectorAll(".cat-tab").forEach(tab => {
+  tab.addEventListener("click", () => {
+    document.querySelectorAll(".cat-tab").forEach(t => t.classList.remove("active"));
+    tab.classList.add("active");
+    const cat = tab.getAttribute("data-cat");
+    document.querySelectorAll("#prompt-row .prompt-pill").forEach(pill => {
+      if (cat === "all" || pill.getAttribute("data-cat") === cat) {
+        pill.style.display = "inline-flex";
+      } else {
+        pill.style.display = "none";
+      }
+    });
+  });
+});
+
+/* ----------------------------------------------------------------------------
+ * 2. Dark / Gym Mode Toggle
+ * -------------------------------------------------------------------------- */
+const darkToggle = document.getElementById("dark-toggle");
+darkToggle.addEventListener("click", () => {
+  document.body.classList.toggle("dark-mode");
+  const isDark = document.body.classList.contains("dark-mode");
+  darkToggle.querySelector("span:last-child").textContent = isDark ? "Light Mode" : "Gym Mode";
+  darkToggle.querySelector(".material-symbols-outlined").textContent = isDark ? "light_mode" : "dark_mode";
+});
+
+/* ----------------------------------------------------------------------------
+ * 3. Quick Stats / Athlete Sidebar Toggle
+ * -------------------------------------------------------------------------- */
+const sidebar = document.getElementById("profile-sidebar");
+const sidebarToggle = document.getElementById("sidebar-toggle");
+const closeSidebar = document.getElementById("close-sidebar");
+
+sidebarToggle.addEventListener("click", () => {
+  sidebar.classList.toggle("collapsed");
+});
+closeSidebar.addEventListener("click", () => {
+  sidebar.classList.add("collapsed");
+});
+
+/* ----------------------------------------------------------------------------
+ * 4. Image Lightbox Modal
+ * -------------------------------------------------------------------------- */
+const lightbox = document.getElementById("lightbox-modal");
+const lightboxImg = document.getElementById("lightbox-img");
+const lightboxDownload = document.getElementById("lightbox-download");
+const lightboxClose = document.getElementById("lightbox-close");
+
+function openLightbox(url) {
+  lightboxImg.src = url;
+  lightboxDownload.href = url;
+  lightbox.classList.add("open");
+}
+lightboxClose.addEventListener("click", () => lightbox.classList.remove("open"));
+lightbox.addEventListener("click", (e) => {
+  if (e.target === lightbox) lightbox.classList.remove("open");
+});
+
+/* ----------------------------------------------------------------------------
+ * 5. Hands-Free Voice Input (SpeechRecognition)
+ * -------------------------------------------------------------------------- */
+const voiceBtn = document.getElementById("voice-btn");
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+if (SpeechRecognition) {
+  const recognition = new SpeechRecognition();
+  recognition.continuous = false;
+  recognition.interimResults = false;
+  recognition.lang = "en-US";
+
+  let isRecording = false;
+
+  voiceBtn.addEventListener("click", () => {
+    if (!isRecording) {
+      try {
+        recognition.start();
+        isRecording = true;
+        voiceBtn.classList.add("recording");
+      } catch (err) {
+        console.warn("Speech recognition error:", err);
+      }
+    } else {
+      recognition.stop();
+      isRecording = false;
+      voiceBtn.classList.remove("recording");
+    }
+  });
+
+  recognition.onresult = (event) => {
+    const transcript = event.results[0][0].transcript;
+    if (transcript) {
+      input.value = transcript;
+      sendMessage(transcript);
+    }
+    isRecording = false;
+    voiceBtn.classList.remove("recording");
+  };
+
+  recognition.onerror = () => {
+    isRecording = false;
+    voiceBtn.classList.remove("recording");
+  };
+
+  recognition.onend = () => {
+    isRecording = false;
+    voiceBtn.classList.remove("recording");
+  };
+} else {
+  voiceBtn.style.display = "none";
+}
+
+/* ----------------------------------------------------------------------------
+ * 6. Workout & Rest Stopwatch / Timer
+ * -------------------------------------------------------------------------- */
+let timerSeconds = 0;
+let timerInterval = null;
+const timerClock = document.getElementById("timer-clock");
+const timerStart = document.getElementById("timer-start");
+const timerRest30 = document.getElementById("timer-rest30");
+const timerReset = document.getElementById("timer-reset");
+
+function updateTimerDisplay() {
+  const mins = String(Math.floor(timerSeconds / 60)).padStart(2, "0");
+  const secs = String(timerSeconds % 60).padStart(2, "0");
+  timerClock.textContent = `${mins}:${secs}`;
+}
+
+timerStart.addEventListener("click", () => {
+  if (timerInterval) {
+    clearInterval(timerInterval);
+    timerInterval = null;
+    timerStart.textContent = "▶ Start";
+  } else {
+    timerInterval = setInterval(() => {
+      timerSeconds++;
+      updateTimerDisplay();
+    }, 1000);
+    timerStart.textContent = "⏸ Pause";
+  }
+});
+
+timerRest30.addEventListener("click", () => {
+  clearInterval(timerInterval);
+  timerSeconds = 30;
+  updateTimerDisplay();
+  timerStart.textContent = "⏸ Pause";
+  timerInterval = setInterval(() => {
+    if (timerSeconds > 0) {
+      timerSeconds--;
+      updateTimerDisplay();
+    } else {
+      clearInterval(timerInterval);
+      timerInterval = null;
+      timerStart.textContent = "▶ Start";
+    }
+  }, 1000);
+});
+
+timerReset.addEventListener("click", () => {
+  clearInterval(timerInterval);
+  timerInterval = null;
+  timerSeconds = 0;
+  updateTimerDisplay();
+  timerStart.textContent = "▶ Start";
+});
+</script>
+</body>
+</html>
